@@ -28,17 +28,17 @@ exclude:
   - not-pure-poole.gemspec
 
 # Optimize Jekyl SEO Tag
-twitter:
-  username: vszhub
+weibo:
+  username: loopbacks
   card: summary
 logo: logo.png
 social:
-  name: Songzi Vong
+  name: gaopeng
   links:
     - https://twitter.com/vszhub
     - https://github.com/vszhub
 google_site_verification: xxxxx
-lang: en
+lang: cn
 
 sass:
   sass_dir: _sass
@@ -54,6 +54,6 @@ sass:
 
 # Specify the author for blog posts
 author:
-  name: Songzi Vong
-  url: https://github.com/vszhub/
-  email: vszhub@gmail.com
+  name: gaopeng
+  url: https://github.com/gaopengk/
+  email: loopbacks@yeah.net
