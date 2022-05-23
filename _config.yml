@@ -2,10 +2,10 @@
 title: ice cubes
 description: gaopeng的小站
 url: https://gaopengk.github.io
-avatar: /avatar.jpeg
+avatar: /imgs/avatar.jpg
 paginate: 5
 permalink: pretty
-cover_image: /bg.jpeg
+cover_image: /imgs/bg.jpg
 
 # Gems
 plugins:
@@ -35,8 +35,7 @@ logo: logo.png
 social:
   name: gaopeng
   links:
-    - https://twitter.com/vszhub
-    - https://github.com/vszhub
+    - https://github.com/gaopengk
 google_site_verification: xxxxx
 lang: cn
 
