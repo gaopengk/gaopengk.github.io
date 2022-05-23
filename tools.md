@@ -1,6 +1,6 @@
 ---
-layout: page
-title: 自用工具
+layout: default
+title: 工具
 ---
 
 - <a href="http://tool.chinaz.com/Tools/jsformat.aspx" target="_blank">JS/Html 代码格式化</a>
