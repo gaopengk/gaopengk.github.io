@@ -6,22 +6,22 @@ author:     gaopeng
 tags:       [图标包]
 ---
 ## 新版特征
-- 共203枚图标。
+- 新增56枚。
 - 谢谢大伙儿的支持。
 
 ***
 
 ## 文件信息
-- 版本：0.2.a (91)
+- 版本：0.2.2 (92)
 - 包名：com.gaopeng.cocktail
-- 大小 ：4.9M
+- 大小 ：5.3M
 
-_MD5：c98c05e3faab2dd03c7185aea87e2873_
+_MD5：d96b715560e5f847a134f8ca18deeb2c_
 
 ***
 
 ## 下载
-<a href="https://wwu.lanzouq.com/i0rpJ043g93g" target="_blank">蓝奏云</a> | <a href="https://pan.baidu.com/s/1LLoGXX-15WOA5SM4kdxuSw"  target="_blank">扩展</a>
+<a href="https://wwu.lanzouq.com/iBC8T05wn1tg" target="_blank">蓝奏云</a> | <a href="https://pan.baidu.com/s/1LLoGXX-15WOA5SM4kdxuSw"  target="_blank">扩展</a>
 
 _华为主题请点扩展_
 
