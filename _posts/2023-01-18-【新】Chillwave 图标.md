@@ -23,7 +23,7 @@ _MD5：802f32292814c4335811779b1b11bf4f_
 ## 下载
 <a href="https://pan.baidu.com/s/10G91zuTU3BzGGrL_P5VdTQ?pwd=dqa3" target="_blank">百度网盘</a>
 
-_华为主题已在百度网盘内_
+_密码：dqa3，华为主题已在百度网盘内。_
 
 
 ***
