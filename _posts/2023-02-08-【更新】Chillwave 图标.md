@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      【新】Chillwave 图标
+title:      【更新】Chillwave 图标
 date:       2023-02-08 22:37 +0800
 author:     gaopeng
 tags:       [图标包]
