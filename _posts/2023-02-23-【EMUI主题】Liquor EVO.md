@@ -14,8 +14,6 @@ tags:       [EMUI主题]
 - 版本：1.0.0 (10.0.100)
 - 大小 ：2.18M
 
-<img src="https://gaopengk.github.io/imgs/liquor_evo.jpg"  width="100%">
-
 ***
 
 ## 下载
@@ -23,4 +21,4 @@ tags:       [EMUI主题]
 
 _密码：jnf5_
 
-<img src="https://gaopengk.github.io/imgs/preview_liquor.jpg"  width="100%">
+<img src="https://gaopengk.github.io/imgs/liquor_evo.jpg"  width="100%">
