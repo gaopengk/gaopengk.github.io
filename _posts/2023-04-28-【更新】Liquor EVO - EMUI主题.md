@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      【新】Liquor EVO - EMUI主题
-date:       2023-02-23 22:27 +0800
+title:      【更新】Liquor EVO - EMUI主题
+date:       2023-04-28 22:13 +0800
 author:     gaopeng
 tags:       [EMUI主题]
 ---
@@ -11,8 +11,8 @@ tags:       [EMUI主题]
 ***
 
 ## 文件信息
-- 版本：1.0.0 (10.0.100)
-- 大小 ：2.18M
+- 版本：1.0.1 (10.0.101)
+- 大小 ：3.97M
 
 ***
 
