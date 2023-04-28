@@ -6,7 +6,7 @@ author:     gaopeng
 tags:       [EMUI主题]
 ---
 ## 新版特征
-- 仅系统图标。
+- 新增53枚。
 
 ***
 
