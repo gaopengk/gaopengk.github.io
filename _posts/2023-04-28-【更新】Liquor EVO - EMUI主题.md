@@ -19,6 +19,7 @@ tags:       [EMUI主题]
 ## 下载
 <a href="https://pan.baidu.com/s/1sRp0vIUud_6K8SZApWvXnw?pwd=jnf5"  target="_blank">百度网盘</a>
 
-_密码：jnf5_
+_图标包已发布，密码：jnf5_
 
 <img src="https://gaopengk.github.io/imgs/liquor_evo.jpg"  width="100%">
+<img src="https://gaopengk.github.io/imgs/evo_l_1.0.1.jpg"  width="100%">
