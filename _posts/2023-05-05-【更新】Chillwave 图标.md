@@ -1,22 +1,22 @@
 ---
 layout:     post
 title:      【更新】Chillwave 图标
-date:       2023-04-14 21:44 +0800
+date:       2023-05-05 21:48 +0800
 author:     gaopeng
 tags:       [图标包]
 ---
 ## 新版特征
-- 新增66枚。
+- 新增69枚。
 
 ***
 
 ## 文件信息
-- 版本：1.0.2 (102)
+- 版本：1.0.3 (103)
 - 包名：com.gaopeng.chillwave.iconpack
-- 大小 ：5.90M
+- 大小 ：6.08M
 
-_MD5：25c571f9bdfdd0127c79fdf3bbb226e0_
-<img src="https://gaopengk.github.io/imgs/chillwave_1.0.2.jpg"  width="100%">
+_MD5：bc19a6f242c28292b55954f7415ec0fd_
+<img src="https://gaopengk.github.io/imgs/chillwave_1.0.3.jpg"  width="100%">
 
 ***
 
