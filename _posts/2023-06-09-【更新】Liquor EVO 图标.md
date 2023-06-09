@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      【更新】Liquor EVO 图标
-date:       2023-05-19 13:23 +0800
+date:       2023-06-09 21:23 +0800
 author:     gaopeng
 tags:       [图标包]
 ---
@@ -11,12 +11,12 @@ tags:       [图标包]
 ***
 
 ## 文件信息
-- 版本：1.0.2 (102)
+- 版本：1.0.3 (103)
 - 包名：com.gaopeng.evo_l.iconpack
-- 大小 ：5.58M
+- 大小 ：5.79M
 
-_MD5：ce42f217adce22ccb6112d90d9a9c67f_
-<img src="https://gaopengk.github.io/imgs/evo_l_1.0.2.jpg"  width="100%">
+_MD5：66bb2f96d8bb8b36876f04bd8a36acb7_
+<img src="https://gaopengk.github.io/imgs/evo_l_1.0.3.jpg"  width="100%">
 
 ***
 
