@@ -88,5 +88,25 @@
     "downloadable": true,
     "dimensions": "2160x2160",
     "copyright": "CreativeCommons Attribution-ShareALike"
+},
+{
+    "name": "Wallpaper 9",
+    "author": "N-series",
+    "url": "https://gaopengk.github.io/imgs/Wallpaper-9.jpg",
+    "thumbUrl": "https://gaopengk.github.io/imgs/Wallpaper-9.jpg",
+    "collections": "Life",
+    "downloadable": true,
+    "dimensions": "2160x2160",
+    "copyright": "CreativeCommons Attribution-ShareALike"
+},
+{
+    "name": "Wallpaper 10",
+    "author": "N-series",
+    "url": "https://gaopengk.github.io/imgs/Wallpaper-10.jpg",
+    "thumbUrl": "https://gaopengk.github.io/imgs/Wallpaper-10.jpg",
+    "collections": "Life",
+    "downloadable": true,
+    "dimensions": "2160x2160",
+    "copyright": "CreativeCommons Attribution-ShareALike"
 }
 ]
