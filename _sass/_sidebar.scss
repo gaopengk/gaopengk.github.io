@@ -13,7 +13,7 @@
   }
 
   // 阴影（水平偏移，垂直偏移，模糊半径，颜色）
-  filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.6));
+  filter: drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.6));
 }
 
 .avatar-image {
@@ -25,7 +25,7 @@
   margin-left: auto;
   
   // 阴影（水平偏移，垂直偏移，模糊半径，颜色）
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.6);
+  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.6);
 }
 
 .masthead-title {
