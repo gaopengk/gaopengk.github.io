@@ -20,6 +20,7 @@
   display: block;
   margin-right: auto;
   margin-left: auto;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* 水平偏移，垂直偏移，模糊半径，颜色 */
 }
 
 .masthead-title {
