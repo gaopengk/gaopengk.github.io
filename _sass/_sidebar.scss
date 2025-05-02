@@ -19,7 +19,7 @@
 .avatar-image {
   width: 30%;
   height: auto;
-  border-radius: 50%;
+  border-radius: 34%;
   display: block;
   margin-right: auto;
   margin-left: auto;
@@ -92,6 +92,6 @@
 
 @media (max-width: $md-width) {
   .avatar-image {
-    width: 25%;
+    width: 50%;
   }
 }
