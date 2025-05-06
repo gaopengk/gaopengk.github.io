@@ -5,6 +5,7 @@ layout: default
 {% include home-header.html %}
 
 <h1>{{ page.title }}</h1>
+<h2>标签</h2>
 <!-- tags -->
 {% comment %} Check the type of archive {% endcomment %}
 {%- if page.type == 'categories' -%}
@@ -78,6 +79,7 @@ layout: default
 {%- endfor -%}
 
 <!-- dates -->
+<h2>日期</h2>
 {%- assign taxonomies = site.posts | group_by_exp: "post", "post.date | date: '%Y'" -%}
 
 <div class="taxonomies-wrapper">
