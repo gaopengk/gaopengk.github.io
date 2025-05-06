@@ -1,15 +1,15 @@
-- type: dates
-  title: 日期
-  url: /dates/
-#- type: categories
-#  title: Categories
-#  url: /categories/
-- type: tags
-  title: 标签
-  url: /tags/
 - type: tools
   title: 工具
   url: /tools/
 - type: music
   title: 音乐
   url: /music/
+- type: dates
+  title: 日期
+  url: /dates/
+- type: tags
+  title: 标签
+  url: /tags/
+#- type: categories
+#  title: Categories
+#  url: /categories/
