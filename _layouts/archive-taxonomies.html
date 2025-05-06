@@ -77,9 +77,9 @@ layout: default
     {%- endif -%}
   {%- endfor -%}
 {%- endfor -%}
-
+<a href="#" onclick="backToTop()" class="back-to-top">回到顶部&#8648;</a>
 <!-- dates -->
-<h2>日期</h2>
+<h2 id="date">日期</h2>
 {%- assign taxonomies = site.posts | group_by_exp: "post", "post.date | date: '%Y'" -%}
 
 <div class="taxonomies-wrapper">
@@ -109,7 +109,7 @@ layout: default
       </li>
     {%- endfor -%}
   </ul>
-  <a href="#" onclick="backToTop()" class="back-to-top">回到顶部 &#8648;</a>
+  <a href="#date" onclick="backToTop()" class="back-to-top">回到顶部 &#8648;</a>
 {%- endfor -%}
 
 <script>
