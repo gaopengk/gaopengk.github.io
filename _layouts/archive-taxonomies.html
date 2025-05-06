@@ -73,13 +73,13 @@ layout: default
           </li>
         {%- endfor -%}
       </ul>
-      <a href="#" onclick="backToTop()" class="back-to-top">回到顶部&#8648;</a>
+      <a href="#" onclick="backToTag()" class="back-to-tags">回到顶部&#8648;</a>
     {%- endif -%}
   {%- endfor -%}
 {%- endfor -%}
 
 <script>
-  function backToTop() {
+  function backToTag() {
     const main = document.getElementById("site-main");
     main.scrollTop = 0;
   }
