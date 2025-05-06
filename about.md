@@ -6,3 +6,5 @@ title: 关于
 # 鬼知道会发生什么
 
 <img src="https://gaopengk.github.io/imgs/about.jpg"  width="100%">
+
+<i class="fa fa-weibo" aria-hidden="true"></i>
