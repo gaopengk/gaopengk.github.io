@@ -4,3 +4,6 @@
 - title: GitHub
   url: https://github.com/gaopengk
   icon: fab fa-github
+- title: 标签
+  url: https://gaopengk.github.io/tags/
+  icon: fas fa-tags
