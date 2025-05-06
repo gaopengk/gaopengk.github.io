@@ -78,7 +78,7 @@ layout: default
   {%- endfor -%}
 {%- endfor -%}
 <a href="#" onclick="backToTop()" class="back-to-top">回到顶部&#8648;</a>
-
+<hr />
 <!-- dates -->
 <h2 id="date">日期</h2>
 {%- assign taxonomies = site.posts | group_by_exp: "post", "post.date | date: '%Y'" -%}
