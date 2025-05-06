@@ -4,9 +4,6 @@
 - type: music
   title: 音乐
   url: /music/
-- type: dates
-  title: 日期
-  url: /dates/
 - type: tags
-  title: 标签
+  title: 归档
   url: /tags/
