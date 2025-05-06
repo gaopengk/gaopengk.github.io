@@ -78,6 +78,13 @@ layout: default
   {%- endfor -%}
 {%- endfor -%}
 
+<script>
+  function backToTop() {
+    const main = document.getElementById("site-main");
+    main.scrollTop = 0;
+  }
+</script>
+
 <!-- dates -->
 <h2>日期</h2>
 {%- assign taxonomies = site.posts | group_by_exp: "post", "post.date | date: '%Y'" -%}
