@@ -5,11 +5,12 @@ layout: default
 {% include home-header.html %}
 
 <h1>{{ page.title }}</h1>
-<!-- 时间 -->
-{%- assign taxonomies = site.posts | group_by_exp: "post", "post.date | date: '%Y'" -%}
+
 
 <div class="taxonomies-wrapper">
   <ul class="taxonomies">
+    <!-- 时间 -->
+{%- assign taxonomies = site.posts | group_by_exp: "post", "post.date | date: '%Y'" -%}
     <!-- 时间 -->
     {%- for taxonomy in taxonomies -%}
       <li>
