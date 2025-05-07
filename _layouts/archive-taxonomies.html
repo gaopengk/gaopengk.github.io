@@ -78,7 +78,8 @@ layout: default
   {%- endfor -%}
 {%- endfor -%}
 <a href="#" onclick="backToTop()" class="back-to-top">回到顶部&#8648;</a>
-<hr />
+  </section>
+      <section class="post-entry">
 <!-- dates -->
 <h2 id="date" class="post-title">日期</h2>
 {%- assign taxonomies = site.posts | group_by_exp: "post", "post.date | date: '%Y'" -%}
@@ -110,15 +111,14 @@ layout: default
       </li>
     {%- endfor -%}
   </ul>
-  <a href="#date" onclick="backToTop()" class="back-to-top">回到“日期” &#8648;</a>
+  <p><a href="#date" onclick="backToTop()" class="back-to-top">回到“日期” &#8648;</a></p>
 {%- endfor -%}
-<a href="#" onclick="backToTop()" class="back-to-top">回到顶部&#8648;</a>
-
-<script>
+<p><a href="#" onclick="backToTop()" class="back-to-top">回到顶部&#8648;</a></p>
+  </section>
+  <script>
   function backToTop() {
     const main = document.getElementById("site-main");
     main.scrollTop = 0;
   }
-</script>
-  </section>
+  </script>
 </div>
