@@ -6,6 +6,7 @@ avatar: /imgs/avatar.jpg
 paginate: 5
 permalink: pretty
 cover_image: /imgs/bg.jpg
+musicid: 13690722677
 
 # Gems
 plugins:
