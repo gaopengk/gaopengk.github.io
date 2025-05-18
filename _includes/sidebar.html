@@ -32,7 +32,7 @@
       {% for social in site.data.social -%}
         <li class="pure-menu-item">
           <a class="social-icon pure-menu-link" href="{{ social.url }}">
-            <i class="{{ social.icon | default: 'fas fa-link' }}" title="{{ social.title }}"></i>
+            <i class="{{ social.icon | default: 'fas fa-link' }}" title="{{ social.title }}" target="_blank"></i>
           </a>
         </li>
       {%- endfor %}
