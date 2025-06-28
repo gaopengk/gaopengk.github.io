@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>业余无线电通联日志记录</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36CFC9',
+                        accent: '#FF7D00',
+                        neutral: '#333647',
+                        "neutral-light": '#F5F7FA',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .transition-all-300 {
+                transition: all 300ms ease-in-out;
+            }
+            .bg-gradient-primary {
+                background: linear-gradient(135deg, #165DFF 0%, #36CFC9 100%);
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50 text-neutral min-h-screen flex flex-col">
+    <!-- 导航栏 -->
+    <header class="bg-white shadow-md fixed w-full z-50 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-rss text-primary text-2xl"></i>
+                <h1 class="text-xl md:text-2xl font-bold text-primary">RadioLog<span class="text-accent">Pro</span></h1>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#dashboard" class="text-neutral hover:text-primary transition-all-300 font-medium">仪表盘</a>
+                <a href="#new-log" class="text-neutral hover:text-primary transition-all-300 font-medium">新建日志</a>
+                <a href="#history" class="text-neutral hover:text-primary transition-all-300 font-medium">历史记录</a>
+                <a href="#settings" class="text-neutral hover:text-primary transition-all-300 font-medium">设置</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <button class="hidden md:block bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-all-300 shadow-md hover:shadow-lg">
+                    <i class="fa fa-save mr-2"></i>保存日志
+                </button>
+                <button class="md:hidden text-neutral text-xl" id="mobile-menu-button">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div class="md:hidden hidden bg-white absolute w-full shadow-lg" id="mobile-menu">
+            <div class="container mx-auto px-4 py-3 flex flex-col space-y-4">
+                <a href="#dashboard" class="text-neutral hover:text-primary py-2 transition-all-300 font-medium">仪表盘</a>
+                <a href="#new-log" class="text-neutral hover:text-primary py-2 transition-all-300 font-medium">新建日志</a>
+                <a href="#history" class="text-neutral hover:text-primary py-2 transition-all-300 font-medium">历史记录</a>
+                <a href="#settings" class="text-neutral hover:text-primary py-2 transition-all-300 font-medium">设置</a>
+                <button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-all-300 shadow-md hover:shadow-lg">
+                    <i class="fa fa-save mr-2"></i>保存日志
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="flex-grow pt-20 pb-12">
+        <div class="container mx-auto px-4">
+            <!-- 仪表盘 -->
+            <section id="dashboard" class="mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-neutral border-b-2 border-primary/20 pb-2">
+                    <i class="fa fa-dashboard mr-2 text-primary"></i>通联仪表盘
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow-lg p-6 transition-all-300 hover:shadow-xl">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-neutral">今日通联</h3>
+                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                <i class="fa fa-comments text-primary"></i>
+                            </div>
+                        </div>
+                        <p class="text-3xl font-bold text-neutral" id="today-qso-count">0</p>
+                        <p class="text-sm text-gray-500 mt-1">较昨日 <span class="text-green-500">+12%</span></p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg p-6 transition-all-300 hover:shadow-xl">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-neutral">本月通联</h3>
+                            <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
+                                <i class="fa fa-calendar-check-o text-secondary"></i>
+                            </div>
+                        </div>
+                        <p class="text-3xl font-bold text-neutral" id="month-qso-count">0</p>
+                        <p class="text-sm text-gray-500 mt-1">较上月 <span class="text-green-500">+8%</span></p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg p-6 transition-all-300 hover:shadow-xl">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-neutral">总通联数</h3>
+                            <div class="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+                                <i class="fa fa-bar-chart text-accent"></i>
+                            </div>
+                        </div>
+                        <p class="text-3xl font-bold text-neutral" id="total-qso-count">0</p>
+                        <p class="text-sm text-gray-500 mt-1">共 <span id="unique-callsigns">0</span> 个呼号</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg p-6 transition-all-300 hover:shadow-xl">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-neutral">录音时长</h3>
+                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                <i class="fa fa-clock-o text-primary"></i>
+                            </div>
+                        </div>
+                        <p class="text-3xl font-bold text-neutral" id="total-recording-time">00:00:00</p>
+                        <p class="text-sm text-gray-500 mt-1">今日 <span id="today-recording-time">00:00:00</span></p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl shadow-lg p-6 lg:col-span-2 transition-all-300 hover:shadow-xl">
+                        <h3 class="text-lg font-semibold text-neutral mb-4">通联趋势</h3>
+                        <div class="h-64">
+                            <canvas id="qso-trend-chart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-lg p-6 transition-all-300 hover:shadow-xl">
+                        <h3 class="text-lg font-semibold text-neutral mb-4">频段分布</h3>
+                        <div class="h-64">
+                            <canvas id="band-distribution-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 新建日志 -->
+            <section id="new-log" class="mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-neutral border-b-2 border-primary/20 pb-2">
+                    <i class="fa fa-plus-circle mr-2 text-primary"></i>新建通联日志
+                </h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- 日志表单 -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 lg:col-span-2 transition-all-300 hover:shadow-xl">
+                        <form id="log-form" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="call-sign" class="block text-sm font-medium text-gray-700 mb-1">对方呼号 <span class="text-red-500">*</span></label>
+                                    <input type="text" id="call-sign" name="call-sign" required
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300"
+                                        placeholder="例如: BG1XXX">
+                                </div>
+                                
+                                <div>
+                                    <label for="frequency" class="block text-sm font-medium text-gray-700 mb-1">频率 (MHz) <span class="text-red-500">*</span></label>
+                                    <input type="number" step="0.000001" id="frequency" name="frequency" required
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300"
+                                        placeholder="例如: 144.500">
+                                </div>
+                                
+                                <div>
+                                    <label for="mode" class="block text-sm font-medium text-gray-700 mb-1">模式 <span class="text-red-500">*</span></label>
+                                    <select id="mode" name="mode" required
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300">
+                                        <option value="">选择模式</option>
+                                        <option value="SSB">SSB</option>
+                                        <option value="CW">CW</option>
+                                        <option value="FM">FM</option>
+                                        <option value="AM">AM</option>
+                                        <option value="DIGITAL">DIGITAL</option>
+                                        <option value="OTHER">OTHER</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="rst-sent" class="block text-sm font-medium text-gray-700 mb-1">我方信号报告</label>
+                                    <input type="text" id="rst-sent" name="rst-sent"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300"
+                                        placeholder="例如: 599">
+                                </div>
+                                
+                                <div>
+                                    <label for="rst-received" class="block text-sm font-medium text-gray-700 mb-1">对方信号报告</label>
+                                    <input type="text" id="rst-received" name="rst-received"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300"
+                                        placeholder="例如: 599">
+                                </div>
+                                
+                                <div>
+                                    <label for="power" class="block text-sm font-medium text-gray-700 mb-1">发射功率 (W)</label>
+                                    <input type="number" id="power" name="power"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300"
+                                        placeholder="例如: 100">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="location" class="block text-sm font-medium text-gray-700 mb-1">对方位置</label>
+                                <input type="text" id="location" name="location"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300"
+                                    placeholder="例如: 北京, 中国">
+                            </div>
+                            
+                            <div>
+                                <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">备注</label>
+                                <textarea id="notes" name="notes" rows="3"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300"
+                                    placeholder="输入备注信息..."></textarea>
+                            </div>
+                            
+                            <div class="pt-2 flex justify-end space-x-4">
+                                <button type="button" id="reset-form" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all-300">
+                                    <i class="fa fa-refresh mr-2"></i>重置
+                                </button>
+                                <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all-300 shadow-md hover:shadow-lg">
+                                    <i class="fa fa-save mr-2"></i>保存日志
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- 录音功能区 -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 transition-all-300 hover:shadow-xl">
+                        <h3 class="text-lg font-semibold text-neutral mb-4 flex items-center">
+                            <i class="fa fa-microphone mr-2 text-primary"></i>语音记录
+                        </h3>
+                        
+                        <div id="recorder-container" class="space-y-4">
+                            <div class="bg-neutral-light rounded-lg p-4 text-center">
+                                <div id="audio-visualizer" class="h-16 w-full bg-gray-200 rounded-md mb-4 overflow-hidden">
+                                    <div class="h-full flex items-end justify-center space-x-1">
+                                        <!-- 音频可视化将在这里动态生成 -->
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-center space-x-4">
+                                    <button id="start-recording" class="w-14 h-14 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg hover:bg-red-600 transition-all-300">
+                                        <i class="fa fa-circle text-xl"></i>
+                                    </button>
+                                    <button id="pause-recording" class="w-14 h-14 rounded-full bg-gray-300 text-white flex items-center justify-center shadow-lg hover:bg-gray-400 transition-all-300" disabled>
+                                        <i class="fa fa-pause text-xl"></i>
+                                    </button>
+                                    <button id="stop-recording" class="w-14 h-14 rounded-full bg-gray-300 text-white flex items-center justify-center shadow-lg hover:bg-gray-400 transition-all-300" disabled>
+                                        <i class="fa fa-stop text-xl"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <p id="recording-time" class="text-lg font-semibold text-neutral">00:00:00</p>
+                                    <p id="recording-status" class="text-sm text-gray-500 mt-1">点击红色按钮开始录音</p>
+                                </div>
+                            </div>
+                            
+                            <div id="audio-player-container" class="hidden">
+                                <h4 class="text-sm font-medium text-gray-700 mb-2">录音回放</h4>
+                                <audio id="audio-player" controls class="w-full"></audio>
+                                
+                                <div class="mt-4 flex justify-between">
+                                    <button id="save-recording" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all-300">
+                                        <i class="fa fa-save mr-2"></i>保存录音
+                                    </button>
+                                    <button id="delete-recording" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all-300">
+                                        <i class="fa fa-trash mr-2"></i>删除
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div id="transcription-container" class="mt-4">
+                                <h4 class="text-sm font-medium text-gray-700 mb-2">语音转文字</h4>
+                                <div class="bg-neutral-light rounded-lg p-3 min-h-20">
+                                    <p id="transcription-text" class="text-sm text-gray-600">录音结束后，文字内容将显示在这里...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 历史记录 -->
+            <section id="history" class="mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-neutral border-b-2 border-primary/20 pb-2">
+                    <i class="fa fa-history mr-2 text-primary"></i>通联历史记录
+                </h2>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 transition-all-300 hover:shadow-xl">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                        <div class="mb-4 md:mb-0">
+                            <h3 class="text-lg font-semibold text-neutral">所有通联记录</h3>
+                            <p class="text-sm text-gray-500">共 <span id="total-records">0</span> 条记录</p>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+                            <div class="relative">
+                                <input type="text" id="search-log" placeholder="搜索呼号、频率..."
+                                    class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300 w-full sm:w-64">
+                                <i class="fa fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                            
+                            <div class="relative">
+                                <select id="filter-mode"
+                                    class="pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300 w-full sm:w-40 appearance-none bg-white">
+                                    <option value="">所有模式</option>
+                                    <option value="SSB">SSB</option>
+                                    <option value="CW">CW</option>
+                                    <option value="FM">FM</option>
+                                    <option value="AM">AM</option>
+                                    <option value="DIGITAL">DIGITAL</option>
+                                    <option value="OTHER">OTHER</option>
+                                </select>
+                                <i class="fa fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                            </div>
+                            
+                            <button id="export-cabrillo" class="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-all-300 shadow-sm hover:shadow">
+                                <i class="fa fa-download mr-2"></i>导出Cabrillo
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">日期时间</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">呼号</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">频率 (MHz)</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">模式</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">位置</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="log-history">
+                                <!-- 历史记录将在这里动态生成 -->
+                                <tr class="text-center">
+                                    <td colspan="6" class="px-6 py-12 text-gray-500">
+                                        <div class="flex flex-col items-center">
+                                            <i class="fa fa-folder-open-o text-4xl text-gray-300 mb-4"></i>
+                                            <p>暂无通联记录</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="flex items-center justify-between px-4 py-3 sm:px-6 mt-4">
+                        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                            <div>
+                                <p class="text-sm text-gray-700">
+                                    显示第 <span class="font-medium">1</span> 到 <span class="font-medium">0</span> 条，共 <span class="font-medium" id="pagination-total">0</span> 条记录
+                                </p>
+                            </div>
+                            <div>
+                                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                    <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                        <span class="sr-only">上一页</span>
+                                        <i class="fa fa-chevron-left text-xs"></i>
+                                    </a>
+                                    <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white">
+                                        1
+                                    </a>
+                                    <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                        <span class="sr-only">下一页</span>
+                                        <i class="fa fa-chevron-right text-xs"></i>
+                                    </a>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 设置 -->
+            <section id="settings" class="mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-neutral border-b-2 border-primary/20 pb-2">
+                    <i class="fa fa-cog mr-2 text-primary"></i>应用设置
+                </h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- 个人信息 -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 transition-all-300 hover:shadow-xl">
+                        <h3 class="text-lg font-semibold text-neutral mb-4">个人信息</h3>
+                        
+                        <form id="profile-form" class="space-y-4">
+                            <div>
+                                <label for="my-call-sign" class="block text-sm font-medium text-gray-700 mb-1">我的呼号 <span class="text-red-500">*</span></label>
+                                <input type="text" id="my-call-sign" name="my-call-sign" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300"
+                                    placeholder="例如: BG1XXX">
+                            </div>
+                            
+                            <div>
+                                <label for="my-name" class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
+                                <input type="text" id="my-name" name="my-name"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300"
+                                    placeholder="输入你的姓名">
+                            </div>
+                            
+                            <div>
+                                <label for="my-location" class="block text-sm font-medium text-gray-700 mb-1">位置</label>
+                                <input type="text" id="my-location" name="my-location"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300"
+                                    placeholder="例如: 北京, 中国">
+                            </div>
+                            
+                            <div>
+                                <label for="my-qth-locator" class="block text-sm font-medium text-gray-700 mb-1">QTH定位符</label>
+                                <input type="text" id="my-qth-locator" name="my-qth-locator"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300"
+                                    placeholder="例如: PM95gn">
+                            </div>
+                            
+                            <div class="pt-2">
+                                <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all-300 shadow-md hover:shadow-lg">
+                                    <i class="fa fa-save mr-2"></i>保存设置
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- 语音设置 -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 transition-all-300 hover:shadow-xl">
+                        <h3 class="text-lg font-semibold text-neutral mb-4">语音设置</h3>
+                        
+                        <form id="voice-settings-form" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">麦克风</label>
+                                <select id="microphone-select"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300">
+                                    <option value="">正在检测麦克风...</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">自动语音转文字</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="auto-transcribe" name="auto-transcribe" class="w-5 h-5 text-primary rounded focus:ring-primary/50">
+                                    <label for="auto-transcribe" class="ml-2 text-sm text-gray-700">录音结束后自动进行语音转文字</label>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">语音转文字服务</label>
+                                <select id="transcription-service"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300">
+                                    <option value="whisper">Whisper (本地)</option>
+                                    <option value="baidu">百度语音识别</option>
+                                    <option value="google">Google Speech-to-Text</option>
+                                </select>
+                            </div>
+                            
+                            <div id="baidu-credentials" class="hidden space-y-4">
+                                <div>
+                                    <label for="baidu-api-key" class="block text-sm font-medium text-gray-700 mb-1">百度API Key</label>
+                                    <input type="text" id="baidu-api-key" name="baidu-api-key"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300"
+                                        placeholder="输入百度API Key">
+                                </div>
+                                <div>
+                                    <label for="baidu-secret-key" class="block text-sm font-medium text-gray-700 mb-1">百度Secret Key</label>
+                                    <input type="text" id="baidu-secret-key" name="baidu-secret-key"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300"
+                                        placeholder="输入百度Secret Key">
+                                </div>
+                            </div>
+                            
+                            <div id="google-credentials" class="hidden space-y-4">
+                                <div>
+                                    <label for="google-api-key" class="block text-sm font-medium text-gray-700 mb-1">Google API Key</label>
+                                    <input type="text" id="google-api-key" name="google-api-key"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300"
+                                        placeholder="输入Google API Key">
+                                </div>
+                            </div>
+                            
+                            <div class="pt-2">
+                                <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all-300 shadow-md hover:shadow-lg">
+                                    <i class="fa fa-save mr-2"></i>保存设置
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- 其他设置 -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 transition-all-300 hover:shadow-xl">
+                        <h3 class="text-lg font-semibold text-neutral mb-4">其他设置</h3>
+                        
+                        <form id="other-settings-form" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">自动保存日志</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="auto-save" name="auto-save" class="w-5 h-5 text-primary rounded focus:ring-primary/50">
+                                    <label for="auto-save" class="ml-2 text-sm text-gray-700">填写完必填字段后自动保存日志</label>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">主题模式</label>
+                                <select id="theme-mode"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300">
+                                    <option value="system">跟随系统</option>
+                                    <option value="light">浅色模式</option>
+                                    <option value="dark">深色模式</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">数据存储位置</label>
+                                <input type="text" id="storage-location" name="storage-location" readonly
+                                    class="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300"
+                                    placeholder="浏览器本地存储">
+                                <p class="text-xs text-gray-500 mt-1">日志数据将保存在浏览器本地存储中，不会上传到任何服务器。</p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">备份与恢复</label>
+                                <div class="space-y-3">
+                                    <button id="export-data" class="w-full px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-all-300 shadow-sm hover:shadow">
+                                        <i class="fa fa-download mr-2"></i>导出所有数据
+                                    </button>
+                                    <div class="flex items-center space-x-2">
+                                        <label for="import-data" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all-300 cursor-pointer text-center">
+                                            <i class="fa fa-upload mr-2"></i>导入数据文件
+                                        </label>
+                                        <input type="file" id="import-data" name="import-data" accept=".json" class="hidden">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="pt-2">
+                                <button type="button" id="reset-all-data" class="w-full px-6 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-50 transition-all-300">
+                                    <i class="fa fa-trash mr-2"></i>重置所有数据
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-neutral text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fa fa-rss text-primary text-2xl"></i>
+                        <h2 class="text-xl font-bold text-white">RadioLog<span class="text-accent">Pro</span></h2>
+                    </div>
+                    <p class="text-gray-400 text-sm">专业的业余无线电通联日志记录应用，支持语音记录和自动识别，让你的通联记录更加便捷高效。</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">功能</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#dashboard" class="hover:text-white transition-all-300">仪表盘</a></li>
+                        <li><a href="#new-log" class="hover:text-white transition-all-300">新建日志</a></li>
+                        <li><a href="#history" class="hover:text-white transition-all-300">历史记录</a></li>
+                        <li><a href="#settings" class="hover:text-white transition-all-300">应用设置</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">资源</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-all-300">使用指南</a></li>
+                        <li><a href="#" class="hover:text-white transition-all-300">常见问题</a></li>
+                        <li><a href="#" class="hover:text-white transition-all-300">Cabrillo格式</a></li>
+                        <li><a href="#" class="hover:text-white transition-all-300">联系我们</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">关注我们</h3>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-all-300">
+                            <i class="fa fa-weibo text-white"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-all-300">
+                            <i class="fa fa-wechat text-white"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-all-300">
+                            <i class="fa fa-github text-white"></i>
+                        </a>
+                    </div>
+                    <p class="text-gray-400 text-sm">版本 1.0.0</p>
+                    <p class="text-gray-400 text-sm">© 2025 RadioLogPro. 保留所有权利。</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 日志详情模态框 -->
+    <div id="log-detail-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-neutral" id="modal-title">日志详情</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6" id="modal-content">
+                <!-- 日志详情内容将在这里动态生成 -->
+            </div>
+            <div class="p-6 border-t border-gray-200 flex justify-end space-x-4">
+                <button id="delete-log" class="px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-50 transition-all-300">
+                    <i class="fa fa-trash mr-2"></i>删除日志
+                </button>
+                <button id="edit-log" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all-300">
+                    <i class="fa fa-edit mr-2"></i>编辑日志
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 录音权限提示模态框 -->
+    <div id="permission-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-microphone-slash text-yellow-500 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-neutral">需要麦克风权限</h3>
+                <p class="text-gray-500 mt-2">为了使用语音记录功能，请授予麦克风访问权限。</p>
+            </div>
+            <div class="flex space-x-4">
+                <button id="close-permission-modal" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all-300">
+                    取消
+                </button>
+                <button id="request-permission" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all-300">
+                    授予权限
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载提示 -->
+    <div id="loading-indicator" class="fixed inset-0 bg-black bg-opacity-30 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-xl p-6 flex items-center space-x-4">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            <p class="text-lg font-medium text-neutral" id="loading-text">处理中...</p>
+        </div>
+    </div>
+
+    <!-- 通知提示 -->
+    <div id="notification" class="fixed bottom-4 right-4 z-50 max-w-xs w-full transform translate-y-20 opacity-0 transition-all duration-300">
+        <div class="bg-white rounded-lg shadow-lg p-4 flex items-start" id="notification-content">
+            <div id="notification-icon-container" class="w-8 h-8 rounded-full flex items-center justify-center mr-3">
+                <i id="notification-icon" class="fa fa-check text-white"></i>
+            </div>
+            <div>
+                <h4 id="notification-title" class="font-medium text-neutral"></h4>
+                <p id="notification-message" class="text-sm text-gray-500 mt-1"></p>
+            </div>
+            <button id="close-notification" class="ml-auto text-gray-400 hover:text-gray-600">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 移动端菜单切换
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // 导航栏滚动效果
+            const navbar = document.getElementById('navbar');
+            let lastScrollTop = 0;
+            
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                if (scrollTop > 10) {
+                    navbar.classList.add('py-2', 'shadow-lg');
+                    navbar.classList.remove('py-3', 'shadow-md');
+                } else {
+                    navbar.classList.add('py-3', 'shadow-md');
+                    navbar.classList.remove('py-2', 'shadow-lg');
+                }
+                
+                lastScrollTop = scrollTop;
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                        
+                        // 关闭移动端菜单
+                        if (!mobileMenu.classList.contains('hidden')) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+            
+            // 初始化图表
+            const qsoTrendCtx = document.getElementById('qso-trend-chart').getContext('2d');
+            const bandDistributionCtx = document.getElementById('band-distribution-chart').getContext('2d');
+            
+            const qsoTrendChart = new Chart(qsoTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                    datasets: [{
+                        label: '通联数量',
+                        data: [0, 0, 0, 0, 0, 0],
+                        borderColor: '#165DFF',
+                        backgroundColor: 'rgba(22, 93, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                display: true,
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            const bandDistributionChart = new Chart(bandDistributionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['2米', '70厘米', '10米', '20米', '40米'],
+                    datasets: [{
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: [
+                            '#165DFF',
+                            '#36CFC9',
+                            '#FF7D00',
+                            '#722ED1',
+                            '#F5222D'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+            
+            // 录音功能
+            const startRecordingBtn = document.getElementById('start-recording');
+            const pauseRecordingBtn = document.getElementById('pause-recording');
+            const stopRecordingBtn = document.getElementById('stop-recording');
+            const recordingTime = document.getElementById('recording-time');
+            const recordingStatus = document.getElementById('recording-status');
+            const audioPlayerContainer = document.getElementById('audio-player-container');
+            const audioPlayer = document.getElementById('audio-player');
+            const saveRecordingBtn = document.getElementById('save-recording');
+            const deleteRecordingBtn = document.getElementById('delete-recording');
+            const transcriptionText = document.getElementById('transcription-text');
+            const audioVisualizer = document.getElementById('audio-visualizer').querySelector('div');
+            
+            let mediaRecorder;
+            let audioChunks = [];
+            let isRecording = false;
+            let isPaused = false;
+            let recordingStartTime;
+            let recordingTimer;
+            let audioBlob;
+            let currentTranscription = '';
+            
+            // 创建音频可视化柱形
+            for (let i = 0; i < 30; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'bg-primary h-1 w-1 rounded-full transition-all duration-100';
+                audioVisualizer.appendChild(bar);
+            }
+            
+            const bars = audioVisualizer.querySelectorAll('div');
+            
+            // 更新录音时间显示
+            function updateRecordingTime() {
+                const now = Date.now();
+                const duration = Math.floor((now - recordingStartTime) / 1000);
+                
+                const hours = Math.floor(duration / 3600);
+                const minutes = Math.floor((duration % 3600) / 60);
+                const seconds = duration % 60;
+                
+                recordingTime.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            // 请求麦克风权限
+            async function requestMicrophonePermission() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                    initRecorder(stream);
+                    return true;
+                } catch (error) {
+                    console.error('获取麦克风权限失败:', error);
+                    showNotification('错误', '无法访问麦克风，请检查权限设置', 'error');
+                    return false;
+                }
+            }
+            
+            // 初始化录音器
+            function initRecorder(stream) {
+                mediaRecorder = new MediaRecorder(stream);
+                
+                // 音频数据可用时
+                mediaRecorder.addEventListener('dataavailable', event => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                });
+                
+                // 录音停止时
+                mediaRecorder.addEventListener('stop', () => {
+                    clearInterval(recordingTimer);
+                    isRecording = false;
+                    isPaused = false;
+                    
+                    // 更新UI
+                    startRecordingBtn.disabled = false;
+                    pauseRecordingBtn.disabled = true;
+                    stopRecordingBtn.disabled = true;
+                    startRecordingBtn.innerHTML = '<i class="fa fa-circle text-xl"></i>';
+                    recordingStatus.textContent = '录音已停止';
+                    
+                    // 创建音频文件
+                    audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    // 设置音频播放器
+                    audioPlayer.src = audioUrl;
+                    audioPlayerContainer.classList.remove('hidden');
+                    
+                    // 清空音频块
+                    audioChunks = [];
+                    
+                    // 如果启用了自动语音转文字
+                    if (document.getElementById('auto-transcribe').checked) {
+                        startTranscription(audioBlob);
+                    }
+                });
+                
+                // 监听暂停和恢复事件
+                mediaRecorder.addEventListener('pause', () => {
+                    isPaused = true;
+                    clearInterval(recordingTimer);
+                    pauseRecordingBtn.innerHTML = '<i class="fa fa-play text-xl"></i>';
+                    recordingStatus.textContent = '录音已暂停';
+                });
+                
+                mediaRecorder.addEventListener('resume', () => {
+                    isPaused = false;
+                    recordingTimer = setInterval(updateRecordingTime, 1000);
+                    pauseRecordingBtn.innerHTML = '<i class="fa fa-pause text-xl"></i>';
+                    recordingStatus.textContent = '正在录音...';
+                });
+                
+                // 创建音频分析器用于可视化
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaStreamSource(stream);
+                const analyser = audioContext.createAnalyser();
+                
+                source.connect(analyser);
+                
+                analyser.fftSize = 256;
+                const bufferLength = analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+                
+                // 音频可视化动画
+                function visualize() {
+                    if (!isRecording) return;
+                    
+                    requestAnimationFrame(visualize);
+                    
+                    analyser.getByteFrequencyData(dataArray);
+                    
+                    // 更新柱形高度
+                    for (let i = 0; i < bars.length; i++) {
+                        const percent = dataArray[i] / 255;
+                        const height = Math.max(1, Math.floor(percent * 100));
+                        bars[i].style.height = `${height}%`;
+                        
+                        // 根据音量改变颜色
+                        if (percent > 0.7) {
+                            bars[i].className = 'bg-accent h-1 w-1 rounded-full transition-all duration-100';
+                        } else if (percent > 0.3) {
+                            bars[i].className = 'bg-primary h-1 w-1 rounded-full transition-all duration-100';
+                        } else {
+                            bars[i].className = 'bg-gray-300 h-1 w-1 rounded-full transition-all duration-100';
+                        }
+                    }
+                }
+                
+                visualize();
+            }
+            
+            // 开始录音
+            startRecordingBtn.addEventListener('click', async function() {
+                if (!mediaRecorder) {
+                    const hasPermission = await requestMicrophonePermission();
+                    if (!hasPermission) return;
+                }
+                
+                if (!isRecording) {
+                    // 重置录音状态
+                    audioChunks = [];
+                    audioPlayerContainer.classList.add('hidden');
+                    transcriptionText.textContent = '录音结束后，文字内容将显示在这里...';
+                    currentTranscription = '';
+                    
+                    // 开始录音
+                    mediaRecorder.start();
+                    isRecording = true;
+                    recordingStartTime = Date.now();
+                    recordingTimer = setInterval(updateRecordingTime, 1000);
+                    
+                    // 更新UI
+                    startRecordingBtn.disabled = true;
+                    pauseRecordingBtn.disabled = false;
+                    stopRecordingBtn.disabled = false;
+                    recordingStatus.textContent = '正在录音...';
+                    
+                    // 显示权限模态框如果尚未授予
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                        document.getElementById('permission-modal').classList.remove('hidden');
+                    }
+                }
+            });
+            
+            // 暂停/继续录音
+            pauseRecordingBtn.addEventListener('click', function() {
+                if (isRecording) {
+                    if (isPaused) {
+                        mediaRecorder.resume();
+                    } else {
+                        mediaRecorder.pause();
+                    }
+                }
+            });
+            
+            // 停止录音
+            stopRecordingBtn.addEventListener('click', function() {
+                if (isRecording) {
+                    mediaRecorder.stop();
+                }
+            });
+            
+            // 保存录音
+            saveRecordingBtn.addEventListener('click', function() {
+                if (audioBlob) {
+                    // 为当前日志条目添加录音
+                    const logEntry = {
+                        audioBlob: audioBlob,
+                        transcription: currentTranscription
+                    };
+                    
+                    // 这里应该将录音保存到当前日志条目中
+                    showNotification('成功', '录音已保存到日志', 'success');
+                }
+            });
+            
+            // 删除录音
+            deleteRecordingBtn.addEventListener('click', function() {
+                audioPlayerContainer.classList.add('hidden');
+                transcriptionText.textContent = '录音结束后，文字内容将显示在这里...';
+                currentTranscription = '';
+                showNotification('已删除', '录音已删除', 'info');
+            });
+            
+            // 语音转文字
+            async function startTranscription(blob) {
+                showLoading('正在进行语音转文字...');
+                
+                // 这里使用模拟的语音转文字功能
+                // 在实际应用中，应该调用真正的语音识别API
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // 模拟识别结果
+                const sampleTranscription = "这里是一段模拟的语音转文字内容。在实际应用中，这将是从你的录音中识别出来的文字。你可以使用这些文字自动填充日志的部分内容。";
+                transcriptionText.textContent = sampleTranscription;
+                currentTranscription = sampleTranscription;
+                
+                hideLoading();
+                showNotification('成功', '语音转文字完成', 'success');
+            }
+            
+            // 表单提交
+            const logForm = document.getElementById('log-form');
+            
+            logForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // 获取表单数据
+                const formData = new FormData(this);
+                const logEntry = {
+                    id: Date.now().toString(),
+                    timestamp: new Date().toISOString(),
+                    callSign: formData.get('call-sign'),
+                    frequency: formData.get('frequency'),
+                    mode: formData.get('mode'),
+                    rstSent: formData.get('rst-sent'),
+                    rstReceived: formData.get('rst-received'),
+                    power: formData.get('power'),
+                    location: formData.get('location'),
+                    notes: formData.get('notes'),
+                    audio: audioBlob ? URL.createObjectURL(audioBlob) : null,
+                    transcription: currentTranscription
+                };
+                
+                // 保存日志条目
+                saveLogEntry(logEntry);
+                
+                // 重置表单
+                this.reset();
+                audioPlayerContainer.classList.add('hidden');
+                transcriptionText.textContent = '录音结束后，文字内容将显示在这里...';
+                currentTranscription = '';
+                
+                // 更新UI
+                updateLogHistory();
+                updateDashboardStats();
+                
+                showNotification('成功', '日志已保存', 'success');
+            });
+            
+            // 重置表单
+            document.getElementById('reset-form').addEventListener('click', function() {
+                logForm.reset();
+                audioPlayerContainer.classList.add('hidden');
+                transcriptionText.textContent = '录音结束后，文字内容将显示在这里...';
+                currentTranscription = '';
+            });
+            
+            // 日志存储和管理
+            function saveLogEntry(entry) {
+                let logs = JSON.parse(localStorage.getItem('radioLogs')) || [];
+                logs.unshift(entry); // 添加到开头，最新的在最前面
+                localStorage.setItem('radioLogs', JSON.stringify(logs));
+            }
+            
+            function getLogEntries() {
+                return JSON.parse(localStorage.getItem('radioLogs')) || [];
+            }
+            
+            function updateLogHistory() {
+                const logs = getLogEntries();
+                const logHistory = document.getElementById('log-history');
+                
+                if (logs.length === 0) {
+                    logHistory.innerHTML = `
+                        <tr class="text-center">
+                            <td colspan="6" class="px-6 py-12 text-gray-500">
+                                <div class="flex flex-col items-center">
+                                    <i class="fa fa-folder-open-o text-4xl text-gray-300 mb-4"></i>
+                                    <p>暂无通联记录</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    document.getElementById('total-records').textContent = '0';
+                    document.getElementById('pagination-total').textContent = '0';
+                    return;
+                }
+                
+                let html = '';
+                
+                logs.forEach(log => {
+                    const date = new Date(log.timestamp);
+                    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+                    
+                    html += `
+                        <tr class="hover:bg-gray-50 transition-all-300 cursor-pointer" data-log-id="${log.id}">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                ${formattedDate}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral">
+                                ${log.callSign}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                ${log.frequency}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                ${log.mode}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                ${log.location || '-'}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <button class="text-primary hover:text-primary/80 mr-3 view-log">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                                <button class="text-secondary hover:text-secondary/80 mr-3">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button class="text-red-500 hover:text-red-600 delete-log">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                logHistory.innerHTML = html;
+                document.getElementById('total-records').textContent = logs.length;
+                document.getElementById('pagination-total').textContent = logs.length;
+                
+                // 添加查看日志事件监听
+                document.querySelectorAll('.view-log').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const logId = this.closest('tr').getAttribute('data-log-id');
+                        openLogDetail(logId);
+                    });
+                });
+                
+                // 添加删除日志事件监听
+                document.querySelectorAll('.delete-log').forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.stopPropagation(); // 阻止事件冒泡到tr
+                        const logId = this.closest('tr').getAttribute('data-log-id');
+                        deleteLogEntry(logId);
+                    });
+                });
+                
+                // 添加点击行查看日志
+                document.querySelectorAll('#log-history tr').forEach(row => {
+                    if (!row.querySelector('.view-log')) return;
+                    
+                    row.addEventListener('click', function() {
+                        const logId = this.getAttribute('data-log-id');
+                        openLogDetail(logId);
+                    });
+                });
+            }
+            
+            function openLogDetail(logId) {
+                const logs = getLogEntries();
+                const log = logs.find(log => log.id === logId);
+                
+                if (!log) return;
+                
+                const date = new Date(log.timestamp);
+                const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+                
+                const modalTitle = document.getElementById('modal-title');
+                const modalContent = document.getElementById('modal-content');
+                
+                modalTitle.textContent = `日志详情: ${log.callSign}`;
+                
+                let audioHtml = '';
+                if (log.audio) {
+                    audioHtml = `
+                        <div class="mt-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">录音</h4>
+                            <audio controls class="w-full">
+                                <source src="${log.audio}" type="audio/wav">
+                                您的浏览器不支持音频播放。
+                            </audio>
+                        </div>
+                    `;
+                }
+                
+                let transcriptionHtml = '';
+                if (log.transcription) {
+                    transcriptionHtml = `
+                        <div class="mt-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">语音转文字</h4>
+                            <div class="bg-neutral-light rounded-lg p-3">
+                                <p class="text-sm text-gray-600">${log.transcription}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                modalContent.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700 mb-1">日期时间</h4>
+                            <p class="text-neutral">${formattedDate}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700 mb-1">呼号</h4>
+                            <p class="text-neutral">${log.callSign}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700 mb-1">频率 (MHz)</h4>
+                            <p class="text-neutral">${log.frequency}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700 mb-1">模式</h4>
+                            <p class="text-neutral">${log.mode}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700 mb-1">我方信号报告</h4>
+                            <p class="text-neutral">${log.rstSent || '-'}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700 mb-1">对方信号报告</h4>
+                            <p class="text-neutral">${log.rstReceived || '-'}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700 mb-1">发射功率 (W)</h4>
+                            <p class="text-neutral">${log.power || '-'}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700 mb-1">位置</h4>
+                            <p class="text-neutral">${log.location || '-'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">备注</h4>
+                        <div class="bg-neutral-light rounded-lg p-3">
+                            <p class="text-sm text-gray-600">${log.notes || '无备注'}</p>
+                        </div>
+                    </div>
+                    
+                    ${audioHtml}
+                    ${transcriptionHtml}
+                `;
+                
+                // 保存当前查看的日志ID
+                document.getElementById('delete-log').setAttribute('data-log-id', logId);
+                document.getElementById('edit-log').setAttribute('data-log-id', logId);
+                
+                // 显示模态框
+                document.getElementById('log-detail-modal').classList.remove('hidden');
+            }
+            
+            function deleteLogEntry(logId) {
+                if (!confirm('确定要删除这条日志吗？')) return;
+                
+                let logs = getLogEntries();
+                logs = logs.filter(log => log.id !== logId);
+                localStorage.setItem('radioLogs', JSON.stringify(logs));
+                
+                updateLogHistory();
+                updateDashboardStats();
+                
+                showNotification('已删除', '日志已删除', 'info');
+                
+                // 如果模态框打开，关闭它
+                if (!document.getElementById('log-detail-modal').classList.contains('hidden')) {
+                    document.getElementById('log-detail-modal').classList.add('hidden');
+                }
+            }
+            
+            // 关闭模态框
+            document.getElementById('close-modal').addEventListener('click', function() {
+                document.getElementById('log-detail-modal').classList.add('hidden');
+            });
+            
+            // 删除日志（从模态框）
+            document.getElementById('delete-log').addEventListener('click', function() {
+                const logId = this.getAttribute('data-log-id');
+                deleteLogEntry(logId);
+            });
+            
+            // 编辑日志
+            document.getElementById('edit-log').addEventListener('click', function() {
+                const logId = this.getAttribute('data-log-id');
+                // 这里应该实现编辑日志的功能
+                document.getElementById('log-detail-modal').classList.add('hidden');
+                showNotification('功能开发中', '编辑日志功能正在开发中', 'info');
+            });
+            
+            // 关闭权限模态框
+            document.getElementById('close-permission-modal').addEventListener('click', function() {
+                document.getElementById('permission-modal').classList.add('hidden');
+            });
+            
+            // 请求权限
+            document.getElementById('request-permission').addEventListener('click', async function() {
+                const hasPermission = await requestMicrophonePermission();
+                if (hasPermission) {
+                    document.getElementById('permission-modal').classList.add('hidden');
+                }
+            });
+            
+            // 更新仪表盘统计信息
+            function updateDashboardStats() {
+                const logs = getLogEntries();
+                
+                // 计算今日通联
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                const todayLogs = logs.filter(log => {
+                    const logDate = new Date(log.timestamp);
+                    logDate.setHours(0, 0, 0, 0);
+                    return logDate.getTime() === today.getTime();
+                });
+                
+                // 计算本月通联
+                const month = today.getMonth();
+                const year = today.getFullYear();
+                
+                const monthLogs = logs.filter(log => {
+                    const logDate = new Date(log.timestamp);
+                    return logDate.getMonth() === month && logDate.getFullYear() === year;
+                });
+                
+                // 计算总通联数和唯一呼号数
+                const uniqueCallSigns = [...new Set(logs.map(log => log.callSign))];
+                
+                // 更新统计数据
+                document.getElementById('today-qso-count').textContent = todayLogs.length;
+                document.getElementById('month-qso-count').textContent = monthLogs.length;
+                document.getElementById('total-qso-count').textContent = logs.length;
+                document.getElementById('unique-callsigns').textContent = uniqueCallSigns.length;
+                
+                // 更新图表
+                updateCharts(logs);
+                
+                // 计算录音时长
+                // 这里只是模拟，实际应用中应该从日志中提取录音时长
+                const randomHours = Math.floor(Math.random() * 10);
+                const randomMinutes = Math.floor(Math.random() * 60);
+                const randomSeconds = Math.floor(Math.random() * 60);
+                
+                const totalTime = `${randomHours.toString().padStart(2, '0')}:${randomMinutes.toString().padStart(2, '0')}:${randomSeconds.toString().padStart(2, '0')}`;
+                document.getElementById('total-recording-time').textContent = totalTime;
+                
+                const todayRandomMinutes = Math.floor(Math.random() * 60);
+                const todayRandomSeconds = Math.floor(Math.random() * 60);
+                const todayTime = `00:${todayRandomMinutes.toString().padStart(2, '0')}:${todayRandomSeconds.toString().padStart(2, '0')}`;
+                document.getElementById('today-recording-time').textContent = todayTime;
+            }
+            
+            // 更新图表
+            function updateCharts(logs) {
+                // 更新通联趋势图
+                const months = ['1月', '2月', '3月', '4月', '5月', '6月'];
+                const currentMonth = new Date().getMonth();
+                const monthData = Array(6).fill(0);
+                
+                logs.forEach(log => {
+                    const logMonth = new Date(log.timestamp).getMonth();
+                    if (logMonth >= currentMonth - 5 && logMonth <= currentMonth) {
+                        const index = logMonth - (currentMonth - 5);
+                        monthData[index]++;
+                    }
+                });
+                
+                qsoTrendChart.data.datasets[0].data = monthData;
+                qsoTrendChart.update();
+                
+                // 更新频段分布图
+                const bandData = {
+                    '2米': 0,
+                    '70厘米': 0,
+                    '10米': 0,
+                    '20米': 0,
+                    '40米': 0
+                };
+                
+                logs.forEach(log => {
+                    const freq = parseFloat(log.frequency);
+                    
+                    if (freq >= 144 && freq <= 148) {
+                        bandData['2米']++;
+                    } else if (freq >= 430 && freq <= 440) {
+                        bandData['70厘米']++;
+                    } else if (freq >= 28 && freq <= 29.7) {
+                        bandData['10米']++;
+                    } else if (freq >= 14 && freq <= 14.35) {
+                        bandData['20米']++;
+                    } else if (freq >= 7 && freq <= 7.3) {
+                        bandData['40米']++;
+                    }
+                });
+                
+                bandDistributionChart.data.datasets[0].data = Object.values(bandData);
+                bandDistributionChart.update();
+            }
+            
+            // 语音转文字服务选择
+            const transcriptionService = document.getElementById('transcription-service');
+            const baiduCredentials = document.getElementById('baidu-credentials');
+            const googleCredentials = document.getElementById('google-credentials');
+            
+            transcriptionService.addEventListener('change', function() {
+                baiduCredentials.classList.add('hidden');
+                googleCredentials.classList.add('hidden');
+                
+                if (this.value === 'baidu') {
+                    baiduCredentials.classList.remove('hidden');
+                } else if (this.value === 'google') {
+                    googleCredentials.classList.remove('hidden');
+                }
+            });
+            
+            // 显示加载提示
+            function showLoading(text = '处理中...') {
+                document.getElementById('loading-text').textContent = text;
+                document.getElementById('loading-indicator').classList.remove('hidden');
+            }
+            
+            // 隐藏加载提示
+            function hideLoading() {
+                document.getElementById('loading-indicator').classList.add('hidden');
+            }
+            
+            // 显示通知
+            function showNotification(title, message, type = 'info') {
+                const notification = document.getElementById('notification');
+                const notificationTitle = document.getElementById('notification-title');
+                const notificationMessage = document.getElementById('notification-message');
+                const notificationIcon = document.getElementById('notification-icon');
+                const notificationIconContainer = document.getElementById('notification-icon-container');
+                
+                notificationTitle.textContent = title;
+                notificationMessage.textContent = message;
+                
+                // 设置图标和颜色
+                if (type === 'success') {
+                    notificationIcon.className = 'fa fa-check text-white';
+                    notificationIconContainer.className = 'w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mr-3';
+                } else if (type === 'error') {
+                    notificationIcon.className = 'fa fa-times text-white';
+                    notificationIconContainer.className = 'w-8 h-8 rounded-full bg-red-500 flex items-center justify-center mr-3';
+                } else if (type === 'warning') {
+                    notificationIcon.className = 'fa fa-exclamation text-white';
+                    notificationIconContainer.className = 'w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center mr-3';
+                } else {
+                    notificationIcon.className = 'fa fa-info text-white';
+                    notificationIconContainer.className = 'w-8 h-8 rounded-full bg-primary flex items-center justify-center mr-3';
+                }
+                
+                // 显示通知
+                notification.classList.remove('translate-y-20', 'opacity-0');
+                
+                // 3秒后自动关闭
+                setTimeout(() => {
+                    notification.classList.add('translate-y-20', 'opacity-0');
+                }, 3000);
+            }
+            
+            // 关闭通知
+            document.getElementById('close-notification').addEventListener('click', function() {
+                const notification = document.getElementById('notification');
+                notification.classList.add('translate-y-20', 'opacity-0');
+            });
+            
+            // 初始化麦克风列表
+            async function initMicrophoneList() {
+                try {
+                    const devices = await navigator.mediaDevices.enumerateDevices();
+                    const microphoneSelect = document.getElementById('microphone-select');
+                    
+                    const microphones = devices.filter(device => device.kind === 'audioinput');
+                    
+                    if (microphones.length > 0) {
+                        microphoneSelect.innerHTML = '';
+                        microphones.forEach(mic => {
+                            const option = document.createElement('option');
+                            option.value = mic.deviceId;
+                            option.textContent = mic.label || `麦克风 ${microphones.indexOf(mic) + 1}`;
+                            microphoneSelect.appendChild(option);
+                        });
+                    } else {
+                        microphoneSelect.innerHTML = '<option value="">未检测到麦克风</option>';
+                    }
+                } catch (error) {
+                    console.error('枚举设备失败:', error);
+                }
+            }
+            
+            // 初始化应用
+            function initApp() {
+                updateLogHistory();
+                updateDashboardStats();
+                initMicrophoneList();
+                
+                // 加载用户设置
+                const savedSettings = JSON.parse(localStorage.getItem('radioLogSettings')) || {};
+                
+                if (savedSettings.myCallSign) {
+                    document.getElementById('my-call-sign').value = savedSettings.myCallSign;
+                }
+                
+                if (savedSettings.myName) {
+                    document.getElementById('my-name').value = savedSettings.myName;
+                }
+                
+                if (savedSettings.myLocation) {
+                    document.getElementById('my-location').value = savedSettings.myLocation;
+                }
+                
+                if (savedSettings.myQthLocator) {
+                    document.getElementById('my-qth-locator').value = savedSettings.myQthLocator;
+                }
+                
+                if (savedSettings.autoTranscribe !== undefined) {
+                    document.getElementById('auto-transcribe').checked = savedSettings.autoTranscribe;
+                }
+                
+                if (savedSettings.transcriptionService) {
+                    document.getElementById('transcription-service').value = savedSettings.transcriptionService;
+                    
+                    if (savedSettings.transcriptionService === 'baidu') {
+                        baiduCredentials.classList.remove('hidden');
+                        
+                        if (savedSettings.baiduApiKey) {
+                            document.getElementById('baidu-api-key').value = savedSettings.baiduApiKey;
+                        }
+                        
+                        if (savedSettings.baiduSecretKey) {
+                            document.getElementById('baidu-secret-key').value = savedSettings.baiduSecretKey;
+                        }
+                    } else if (savedSettings.transcriptionService === 'google') {
+                        googleCredentials.classList.remove('hidden');
+                        
+                        if (savedSettings.googleApiKey) {
+                            document.getElementById('google-api-key').value = savedSettings.googleApiKey;
+                        }
+                    }
+                }
+                
+                if (savedSettings.autoSave !== undefined) {
+                    document.getElementById('auto-save').checked = savedSettings.autoSave;
+                }
+                
+                if (savedSettings.themeMode) {
+                    document.getElementById('theme-mode').value = savedSettings.themeMode;
+                }
+            }
+            
+            // 保存个人设置
+            document.getElementById('profile-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const settings = {
+                    myCallSign: this.querySelector('#my-call-sign').value,
+                    myName: this.querySelector('#my-name').value,
+                    myLocation: this.querySelector('#my-location').value,
+                    myQthLocator: this.querySelector('#my-qth-locator').value
+                };
+                
+                localStorage.setItem('radioLogSettings', JSON.stringify(settings));
+                showNotification('成功', '个人信息已保存', 'success');
+            });
+            
+            // 保存语音设置
+            document.getElementById('voice-settings-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const settings = JSON.parse(localStorage.getItem('radioLogSettings')) || {};
+                
+                settings.autoTranscribe = this.querySelector('#auto-transcribe').checked;
+                settings.transcriptionService = this.querySelector('#transcription-service').value;
+                
+                if (settings.transcriptionService === 'baidu') {
+                    settings.baiduApiKey = this.querySelector('#baidu-api-key').value;
+                    settings.baiduSecretKey = this.querySelector('#baidu-secret-key').value;
+                } else if (settings.transcriptionService === 'google') {
+                    settings.googleApiKey = this.querySelector('#google-api-key').value;
+                }
+                
+                localStorage.setItem('radioLogSettings', JSON.stringify(settings));
+                showNotification('成功', '语音设置已保存', 'success');
+            });
+            
+            // 保存其他设置
+            document.getElementById('other-settings-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const settings = JSON.parse(localStorage.getItem('radioLogSettings')) || {};
+                
+                settings.autoSave = this.querySelector('#auto-save').checked;
+                settings.themeMode = this.querySelector('#theme-mode').value;
+                
+                localStorage.setItem('radioLogSettings', JSON.stringify(settings));
+                showNotification('成功', '其他设置已保存', 'success');
+            });
+            
+            // 导出数据
+            document.getElementById('export-data').addEventListener('click', function() {
+                const logs = getLogEntries();
+                const data = JSON.stringify(logs, null, 2);
+                const blob = new Blob([data], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `radiolog_export_${new Date().toISOString().slice(0, 10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showNotification('成功', '数据已导出', 'success');
+            });
+            
+            // 导入数据
+            document.getElementById('import-data').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        
+                        if (confirm(`确定要导入 ${data.length} 条日志吗？现有日志不会被删除。`)) {
+                            const currentLogs = getLogEntries();
+                            const mergedLogs = [...currentLogs, ...data];
+                            
+                            // 确保ID的唯一性
+                            const idMap = new Map();
+                            const uniqueLogs = mergedLogs.filter(log => {
+                                if (idMap.has(log.id)) {
+                                    log.id = Date.now().toString(); // 生成新ID
+                                }
+                                idMap.set(log.id, true);
+                                return true;
+                            });
+                            
+                            localStorage.setItem('radioLogs', JSON.stringify(uniqueLogs));
+                            updateLogHistory();
+                            updateDashboardStats();
+                            showNotification('成功', `已导入 ${data.length} 条日志`, 'success');
+                        }
+                    } catch (error) {
+                        console.error('导入数据失败:', error);
+                        showNotification('错误', '导入的数据格式不正确', 'error');
+                    }
+                };
+                
+                reader.readAsText(file);
+            });
+            
+            // 重置所有数据
+            document.getElementById('reset-all-data').addEventListener('click', function() {
+                if (confirm('确定要重置所有数据吗？这将删除所有日志记录，且无法恢复！')) {
+                    localStorage.removeItem('radioLogs');
+                    updateLogHistory();
+                    updateDashboardStats();
+                    showNotification('已重置', '所有数据已重置', 'info');
+                }
+            });
+            
+            // 导出Cabrillo格式
+            document.getElementById('export-cabrillo').addEventListener('click', function() {
+                showNotification('功能开发中', 'Cabrillo导出功能正在开发中', 'info');
+            });
+            
+            // 初始化应用
+            initApp();
+        });
+    </script>
+</body>
+</html>
+    
